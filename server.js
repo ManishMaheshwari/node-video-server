@@ -1,4 +1,5 @@
 import http from 'node:http';
+import * as fs from 'node:fs';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,6 +27,7 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const path = url.pathname;
   const forceError = url.searchParams.get('forceError');
+  const local = url.searchParams.get('local');
 
   // Only handle /video/1 through /video/100
   const videoMatch = path.match(/^\/video\/([1-9]|[1-9]\d{1,3}|1\d{4}|20000)$/);
@@ -98,11 +100,19 @@ const server = http.createServer((req, res) => {
   }
 
   // Third attempt and beyond return success
-  console.log(`request attempt ${currentAttempt} for video#${videoId} with url - ${videosUrls[videoId%videosUrls.length]} at ${Date.now()} - Sucess`);
-  res.writeHead(307, {
-      'Location': videoUrl,
-  });
-  res.end();
+  if(local && local === 'true'){
+    console.log(`request attempt ${currentAttempt} for video#${videoId} with local file v1.mp4 at ${Date.now()} - Sucess`);
+    fs.readFile("v1.mp4", function(error, content) {
+               res.writeHead(200, { 'Content-Type': 'application/octet-stream',  'Content-disposition': 'attachment; filename=v1.mp4'});
+               res.end(content, 'utf-8');
+       });
+  }else{
+    console.log(`request attempt ${currentAttempt} for video#${videoId} with url - ${videosUrls[videoId%videosUrls.length]} at ${Date.now()} - Sucess`);
+    res.writeHead(307, {
+        'Location': videoUrl,
+    });
+    res.end();
+  }
 });
 
 const PORT = process.env.PORT || 3000;
