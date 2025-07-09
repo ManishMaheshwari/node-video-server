@@ -76,6 +76,15 @@ const server = http.createServer((req, res) => {
     }));
     return;
   }
+  if(forceError && forceError === '400'){
+    console.log(`request for ${url} with 400 at ${Date.now()}`);
+    res.writeHead(404);
+    res.end(JSON.stringify({
+      status: 400,
+      message: '400 Not found',
+    }));
+    return;
+  }
 
   // Initialize or increment attempt count
   attemptCounts[endpointKey] = (attemptCounts[endpointKey] || 0) + 1;
