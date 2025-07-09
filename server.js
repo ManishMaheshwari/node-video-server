@@ -78,10 +78,10 @@ const server = http.createServer((req, res) => {
   }
   if(forceError && forceError === '400'){
     console.log(`request for ${url} with 400 at ${Date.now()}`);
-    res.writeHead(404);
+    res.writeHead(400);
     res.end(JSON.stringify({
       status: 400,
-      message: '400 Not found',
+      message: '400 Not found check header',
     }));
     return;
   }
