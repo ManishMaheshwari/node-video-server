@@ -10,11 +10,24 @@ const corsHeaders = {
 // Store attempt counts for each endpoint
 const attemptCounts = {};
 
+const robotsTxt = `User-agent: *
+Disallow: /
+`;
+
 const server = http.createServer((req, res) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     res.writeHead(204, corsHeaders);
     res.end();
+    return;
+  }
+
+  if (req.url === '/robots.txt') {
+    res.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Cache-Control': 'public, max-age=86400', // cache for 1 day
+    });
+    res.end(robotsTxt);
     return;
   }
 
