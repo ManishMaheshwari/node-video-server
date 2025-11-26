@@ -1,5 +1,6 @@
 import http from 'node:http';
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
