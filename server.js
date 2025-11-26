@@ -31,6 +31,30 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.url === '/cc.jpg') {
+    // Sanitize and resolve the file path
+    const filePath = path.join(process.cwd(), 'public', 'cc.jpg');
+    fs.stat(filePath, (err, stats) => {
+      if (err || !stats.isFile()) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('404 Not Found');
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'image/jpeg',
+        'Content-Length': stats.size,
+        'Cache-Control': 'public, max-age=86400', // cache for 1 day
+      });
+      const readStream = fs.createReadStream(filePath);
+      readStream.pipe(res);
+      readStream.on('error', () => {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('500 Internal Server Error');
+      });
+    });
+    return;
+  }
+
   // Set CORS headers for all responses
   Object.entries(corsHeaders).forEach(([key, value]) => {
     res.setHeader(key, value);
