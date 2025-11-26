@@ -36,28 +36,34 @@ const server = http.createServer((req, res) => {
   if (req.url === '/cc.jpg') {
     // Sanitize and resolve the file path
     console.log(`request for cc.jpg at ${Date.now()}`);
-    const filePath = path.join(process.cwd(), 'public', 'cc.jpg');
-    console.log(`filePath ${filePath}`);
-    fs.stat(filePath, (err, stats) => {
-      if (err || !stats.isFile()) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
-        return;
-      }
-      res.writeHead(200, {
-        'Content-Type': 'image/jpeg',
-        'Content-Length': stats.size,
-        'Cache-Control': 'public, max-age=86400', // cache for 1 day
-      });
-      console.log(`Starting`);
-      const readStream = fs.createReadStream(filePath);
-      readStream.pipe(res);
-      console.log(`Starting a`);
-      readStream.on('error', () => {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('500 Internal Server Error');
-      });
-    });
+    fs.readFile("cc.jpg", function(error, content) {
+               res.writeHead(200, { 'Content-Type': 'image/jpeg'});
+               res.end(content, 'utf-8');
+       });
+
+    
+    // const filePath = path.join(process.cwd(), 'public', 'cc.jpg');
+    // console.log(`filePath ${filePath}`);
+    // fs.stat(filePath, (err, stats) => {
+    //   if (err || !stats.isFile()) {
+    //     res.writeHead(404, { 'Content-Type': 'text/plain' });
+    //     res.end('404 Not Found');
+    //     return;
+    //   }
+    //   res.writeHead(200, {
+    //     'Content-Type': 'image/jpeg',
+    //     'Content-Length': stats.size,
+    //     'Cache-Control': 'public, max-age=86400', // cache for 1 day
+    //   });
+    //   console.log(`Starting`);
+    //   const readStream = fs.createReadStream(filePath);
+    //   readStream.pipe(res);
+    //   console.log(`Starting a`);
+    //   readStream.on('error', () => {
+    //     res.writeHead(500, { 'Content-Type': 'text/plain' });
+    //     res.end('500 Internal Server Error');
+    //   });
+    // });
      console.log(`Starting bb`);
     return;
   }
