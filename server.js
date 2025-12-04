@@ -22,6 +22,7 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
+  console.log('Request Headers:', req.headers);
 
   if (req.url === '/robots.txt') {
     console.log(`request for robots.txt at ${Date.now()}`);
