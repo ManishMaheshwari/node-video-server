@@ -15,6 +15,8 @@ const robotsTxt = `User-agent: *
 Disallow: /
 `;
 
+const fileTxt = `a file`;
+
 const server = http.createServer((req, res) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -31,6 +33,16 @@ const server = http.createServer((req, res) => {
       'Cache-Control': 'public, max-age=86400', // cache for 1 day
     });
     res.end(robotsTxt);
+    return;
+  }
+
+  if (req.url === '/file.csv') {
+    console.log(`request for file.csv at ${Date.now()}`);
+    res.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Cache-Control': 'public, max-age=86400', // cache for 1 day
+    });
+    res.end(fileTxt);
     return;
   }
 
